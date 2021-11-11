@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts ":ht" opt; do
+while getopts "u:s:d:n:p:a:" opt; do
   case ${opt} in
     u ) 
       u="$OPTARG"
@@ -17,10 +17,16 @@ while getopts ":ht" opt; do
     p ) # process option t
       p="$OPTARG"
       ;;
+    a ) 
+        a="$OPTARG"
+        ;;
     
-    \? ) echo "Usage: mysql-transfer [-u username] [-p password] [-n db name] [-s source host] [-d destination host]"
+    \? ) echo "Usage: mysql-transfer [-u username] [-a password] [-n db name] [-p port] [-s source host] [-d destination host]"
       ;;
   esac
 done
+echo "user: $u, password: $a, dbname: $n"
+echo "source: $s"
+echo "dest: $d"
 
-mysqldump -h $s --verbose -u $u --password=$p $n | mysql -u $u --password=$p -h $d --password=$p $n
+mysqldump -h "$s" --verbose -u "$u" --password="$a" --port "$p" "$n" | mysql -u "$u" --password="$a" -h "$d" --port "$p" --password="$p" "$n"
